@@ -29,38 +29,41 @@ from contextlib import asynccontextmanager
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
-    print("[STARTUP] Pre-warming local AI detection and feature models...")
-    for mod in orchestrator.modules:
-        if hasattr(mod, "_lazy_init"):
-            try:
-                mod._lazy_init()
-            except Exception as e:
-                print(f"[STARTUP] Warning warming {mod.name}: {e}")
-    try:
-        print("[STARTUP] Pre-warming EfficientNet-B0 Deepfake Detector...")
-        efficientnet_detector._lazy_init()
-        print("[STARTUP] EfficientNet-B0 Deepfake Detector ready.")
-    except Exception as e:
-        print(f"[STARTUP] Notice: EfficientNet-B0 detector initialization deferred: {e}")
-    try:
-        print("[STARTUP] Pre-warming DF Arena 1B Audio Deepfake Detector...")
-        audio_detector._lazy_init()
-        print("[STARTUP] DF Arena 1B Audio Deepfake Detector ready.")
-    except Exception as e:
-        print(f"[STARTUP] Notice: Audio detector initialization deferred: {e}")
-    try:
-        print("[STARTUP] Pre-warming Dual Video Detector (GenD + DeMamba)...")
-        video_detector._lazy_init()
-        print("[STARTUP] Dual Video Detector (GenD + DeMamba) ready.")
-    except Exception as e:
-        print(f"[STARTUP] Notice: Video detector initialization deferred: {e}")
-    try:
-        print("[STARTUP] Pre-warming RoBERTa AI-Text Detector...")
-        text_detector._lazy_init()
-        print("[STARTUP] RoBERTa AI-Text Detector ready.")
-    except Exception as e:
-        print(f"[STARTUP] Notice: RoBERTa text detector initialization deferred: {e}")
-    print("[STARTUP] Forensic engine models warmed up and ready in memory.")
+    if settings.PREWARM_MODELS:
+        print("[STARTUP] Pre-warming local AI detection and feature models...")
+        for mod in orchestrator.modules:
+            if hasattr(mod, "_lazy_init"):
+                try:
+                    mod._lazy_init()
+                except Exception as e:
+                    print(f"[STARTUP] Warning warming {mod.name}: {e}")
+        try:
+            print("[STARTUP] Pre-warming EfficientNet-B0 Deepfake Detector...")
+            efficientnet_detector._lazy_init()
+            print("[STARTUP] EfficientNet-B0 Deepfake Detector ready.")
+        except Exception as e:
+            print(f"[STARTUP] Notice: EfficientNet-B0 detector initialization deferred: {e}")
+        try:
+            print("[STARTUP] Pre-warming DF Arena 1B Audio Deepfake Detector...")
+            audio_detector._lazy_init()
+            print("[STARTUP] DF Arena 1B Audio Deepfake Detector ready.")
+        except Exception as e:
+            print(f"[STARTUP] Notice: Audio detector initialization deferred: {e}")
+        try:
+            print("[STARTUP] Pre-warming Dual Video Detector (GenD + DeMamba)...")
+            video_detector._lazy_init()
+            print("[STARTUP] Dual Video Detector (GenD + DeMamba) ready.")
+        except Exception as e:
+            print(f"[STARTUP] Notice: Video detector initialization deferred: {e}")
+        try:
+            print("[STARTUP] Pre-warming RoBERTa AI-Text Detector...")
+            text_detector._lazy_init()
+            print("[STARTUP] RoBERTa AI-Text Detector ready.")
+        except Exception as e:
+            print(f"[STARTUP] Notice: RoBERTa text detector initialization deferred: {e}")
+        print("[STARTUP] Forensic engine models warmed up and ready in memory.")
+    else:
+        print("[STARTUP] Dynamic on-demand model loading active (PREWARM_MODELS=false).")
     yield
 
 app = FastAPI(
@@ -70,14 +73,37 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS
+# CORS Configuration (Supports Cloudflare Pages & Railway cross-origin requests)
+cors_origins_raw = settings.CORS_ORIGINS or "*"
+if cors_origins_raw.strip() == "*":
+    allow_origins = ["*"]
+else:
+    allow_origins = [orig.strip() for orig in cors_origins_raw.split(",") if orig.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allow_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Health Check Endpoints (Railway / Cloud Run / Container Orchestrators)
+@app.get("/health")
+@app.get("/api/v1/health")
+async def health_check():
+    return JSONResponse(content={
+        "status": "healthy",
+        "service": "phoenix-forensics",
+        "version": settings.VERSION,
+        "environment": "production" if not settings.DEBUG else "development",
+        "models": {
+            "efficientnet_loaded": bool(getattr(efficientnet_detector, "_loaded", False) or getattr(efficientnet_detector, "model", None) is not None),
+            "roberta_text_loaded": bool(getattr(text_detector, "_loaded", False) or getattr(text_detector, "model", None) is not None),
+            "audio_detector_loaded": bool(getattr(audio_detector, "_initialized", False) or getattr(audio_detector, "model", None) is not None),
+            "video_detector_loaded": bool(getattr(video_detector, "_initialized", False) or getattr(video_detector, "gend_model", None) is not None),
+        }
+    })
 
 # Mount static files
 app.mount("/static/css", StaticFiles(directory=settings.BASE_DIR / "app" / "static" / "css"), name="css")

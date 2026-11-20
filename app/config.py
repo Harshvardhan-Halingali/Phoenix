@@ -4,9 +4,13 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 class Settings:
-    APP_NAME: str = "IMAGE TRACE"
+    APP_NAME: str = "PHOENIX FORENSICS"
     VERSION: str = "1.0.0"
-    DEBUG: bool = True
+    DEBUG: bool = os.getenv("DEBUG", "false").lower() in ("true", "1")
+    PORT: int = int(os.getenv("PORT", 8080))
+    HOST: str = os.getenv("HOST", "0.0.0.0")
+    CORS_ORIGINS: str = os.getenv("CORS_ORIGINS", "*")
+    PREWARM_MODELS: bool = os.getenv("PREWARM_MODELS", "true").lower() in ("true", "1", "yes")
     
     # Storage Paths
     BASE_DIR: Path = BASE_DIR

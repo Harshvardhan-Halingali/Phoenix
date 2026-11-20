@@ -1,3 +1,18 @@
+// Base API URL resolver: supports window.API_BASE_URL (config.js) or localStorage.PHOENIX_API_URL
+function apiUrl(path) {
+  if (!path) return "";
+  if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("data:") || path.startsWith("blob:")) {
+    return path;
+  }
+  const base = (typeof window !== "undefined" && window.API_BASE_URL)
+    ? window.API_BASE_URL.replace(/\/+$/, "")
+    : (typeof localStorage !== "undefined" && localStorage.getItem("PHOENIX_API_URL"))
+      ? localStorage.getItem("PHOENIX_API_URL").replace(/\/+$/, "")
+      : "";
+  if (!base) return path;
+  return base + (path.startsWith("/") ? path : "/" + path);
+}
+
 let currentJobId = null;
 let eventSource = null;
 let currentDossier = null;
@@ -108,7 +123,7 @@ function renderTaskMatrix() {
 
 async function checkConnectorStatus() {
   try {
-    const res = await fetch("/api/v1/connectors/status");
+    const res = await fetch(apiUrl("/api/v1/connectors/status"));
     const data = await res.json();
     const badges = document.getElementById("connectorBadges");
     badges.innerHTML = "";
@@ -136,7 +151,7 @@ async function startInvestigation(file) {
   formData.append("file", file);
 
   try {
-    const res = await fetch("/api/v1/investigate", {
+    const res = await fetch(apiUrl("/api/v1/investigate"), {
       method: "POST",
       body: formData,
     });
@@ -173,7 +188,7 @@ function connectEventSource(jobId) {
     eventSource.close();
   }
 
-  eventSource = new EventSource(`/api/v1/stream/${jobId}`);
+  eventSource = new EventSource(apiUrl(`/api/v1/stream/${jobId}`));
 
   eventSource.onmessage = (event) => {
     try {
@@ -224,7 +239,7 @@ function updateTaskUI(data) {
 
 async function loadFinalReport(jobId) {
   try {
-    const res = await fetch(`/api/v1/report/${jobId}`);
+    const res = await fetch(apiUrl(`/api/v1/report/${jobId}`));
     if (!res.ok) return;
     const dossier = await res.json();
     currentDossier = dossier;
@@ -426,8 +441,8 @@ function renderDossier(dossier) {
   const noise = fi.noise_analysis || {};
   const copymove = fi.copy_move || {};
 
-  document.getElementById("elaOrigImg").src = dossier.metadata ? `/static/uploads/${currentJobId}_${dossier.metadata.filename}` : "";
-  document.getElementById("elaHeatmapImg").src = ela.ela_image_url || "";
+  document.getElementById("elaOrigImg").src = dossier.metadata ? apiUrl(`/static/uploads/${currentJobId}_${dossier.metadata.filename}`) : "";
+  document.getElementById("elaHeatmapImg").src = ela.ela_image_url ? apiUrl(ela.ela_image_url) : "";
   document.getElementById("elaAnomaly").textContent = ela.ela_anomaly_detected ? "POSITIVE (Anomalous variance detected)" : "NEGATIVE (Consistent compression)";
   document.getElementById("elaStats").textContent = `Mean Error: ${ela.mean_error || 0} | StdDev: ${ela.std_error || 0} | Max Error: ${ela.max_error || 0}`;
   document.getElementById("noiseInconsistency").textContent = noise.inconsistent_noise ? `YES (Ratio: ${noise.noise_inconsistency_ratio})` : `NO (Ratio: ${noise.noise_inconsistency_ratio || 0})`;
@@ -624,7 +639,7 @@ async function startAudioDetection(file) {
   const startTime = performance.now();
 
   try {
-    const res = await fetch("/api/v1/detect/audio", {
+    const res = await fetch(apiUrl("/api/v1/detect/audio"), {
       method: "POST",
       body: formData,
     });
@@ -876,7 +891,7 @@ async function startVideoDetection(file) {
   const startTime = performance.now();
 
   try {
-    const res = await fetch("/api/v1/detect/video", {
+    const res = await fetch(apiUrl("/api/v1/detect/video"), {
       method: "POST",
       body: formData,
     });
@@ -1208,7 +1223,7 @@ async function startTextDetection(text) {
   const t0 = performance.now();
 
   try {
-    const res = await fetch("/api/v1/detect/text", {
+    const res = await fetch(apiUrl("/api/v1/detect/text"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: text })
