@@ -1,10 +1,13 @@
-import uvicorn
-import sys
 import os
+import sys
+import uvicorn
 
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8080))
+    host = os.environ.get("HOST", "0.0.0.0")
+    debug = os.environ.get("DEBUG", "false").lower() in ("true", "1")
     print("==================================================================")
     print("           IMAGE TRACE — Forensic Analysis Platform               ")
+    print(f"Starting server at http://{host}:{port} ...")
     print("==================================================================")
-    print("Starting server at http://127.0.0.1:8080 ...")
-    uvicorn.run("app.main:app", host="127.0.0.1", port=8080, reload=True, log_level="info")
+    uvicorn.run("app.main:app", host=host, port=port, reload=debug, log_level="info")

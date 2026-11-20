@@ -10,7 +10,7 @@ class Settings:
     PORT: int = int(os.getenv("PORT", 8080))
     HOST: str = os.getenv("HOST", "0.0.0.0")
     CORS_ORIGINS: str = os.getenv("CORS_ORIGINS", "*")
-    PREWARM_MODELS: bool = os.getenv("PREWARM_MODELS", "true").lower() in ("true", "1", "yes")
+    PREWARM_MODELS: bool = os.getenv("PREWARM_MODELS", "false").lower() in ("true", "1", "yes")
     
     # Storage Paths
     BASE_DIR: Path = BASE_DIR
