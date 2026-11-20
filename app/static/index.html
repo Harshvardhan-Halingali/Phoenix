@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IMAGE TRACE — Digital Authenticity & Multi-Modal Forensic Investigation</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">IT</div>
+      <div>
+        <h1>IMAGE <span>TRACE</span></h1>
+        <div class="brand-subtitle">Tactical Multi-Modal Forensics</div>
+      </div>
+    </div>
+    <div class="sys-badges" id="connectorBadges">
+      <span class="badge online"><span class="live-beacon"></span> SENSORS: ONLINE</span>
+      <span class="badge">Instagram: Checking</span>
+      <span class="badge">Facebook: Checking</span>
+      <span class="badge">Telegram: Checking</span>
+    </div>
+  </header>
+
+  <!-- Main Content Workspace -->
+  <main>
+    <!-- Media Modality Switcher -->
+    <div class="mode-switcher-container">
+      <div class="mode-switcher">
+        <button class="mode-btn active" id="modeImageBtn" data-mode="image">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          Image Forensics
+          <span style="font-size: 0.68rem; padding: 2px 7px; border-radius: 12px; background: rgba(0, 240, 255, 0.12); color: var(--accent-cyan); font-family: var(--font-mono); margin-left: 2px; font-weight: 700;">EfficientNet-B0</span>
+        </button>
+        <button class="mode-btn" id="modeAudioBtn" data-mode="audio">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"/>
+          </svg>
+          Audio Deepfake
+          <span style="font-size: 0.68rem; padding: 2px 7px; border-radius: 12px; background: rgba(16, 185, 129, 0.12); color: var(--accent-emerald); font-family: var(--font-mono); margin-left: 2px; font-weight: 700;">DF Arena 1B</span>
+        </button>
+        <button class="mode-btn" id="modeVideoBtn" data-mode="video">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+          </svg>
+          Video Deepfake
+          <span style="font-size: 0.68rem; padding: 2px 7px; border-radius: 12px; background: rgba(129, 140, 248, 0.12); color: var(--accent-indigo); font-family: var(--font-mono); margin-left: 2px; font-weight: 700;">DeMamba + GenD</span>
+        </button>
+        <button class="mode-btn" id="modeTextBtn" data-mode="text">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          Text Forensics
+          <span style="font-size: 0.68rem; padding: 2px 7px; border-radius: 12px; background: rgba(0, 240, 255, 0.12); color: var(--accent-cyan); font-family: var(--font-mono); margin-left: 2px; font-weight: 700;">RoBERTa-base</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- 1. IMAGE FORENSICS WORKSPACE (Fully Preserved)                -->
+    <!-- ============================================================= -->
+    <div id="imageWorkspace">
+      <div class="grid-top">
+        
+        <!-- Image Upload Panel -->
+        <section class="panel">
+          <div class="panel-title">
+            <span>Image Ingestion</span>
+            <span style="font-family: var(--font-mono); font-size: 0.75rem;">Max 25 MB</span>
+          </div>
+
+          <div class="dropzone" id="dropzone">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+            </svg>
+            <p>Drag & drop suspicious image here, or browse</p>
+            <small>Supported: JPEG, PNG, WebP, TIFF, BMP</small>
+            <input type="file" id="fileInput" accept="image/*" style="display: none;">
+          </div>
+
+          <div class="preview-container" id="previewContainer">
+            <div class="preview-box">
+              <img id="previewImg" src="" alt="Target Image Preview">
+              <div class="preview-meta">
+                <div id="previewFilename" style="color: #fff; font-weight: 600; word-break: break-all;">filename.jpg</div>
+                <div id="previewSize" style="color: var(--text-dim); margin-top: 0.2rem;">0.00 MB</div>
+                <div id="previewType" style="color: var(--accent-cyan); margin-top: 0.2rem;">image/jpeg</div>
+              </div>
+            </div>
+            <button class="btn-primary" id="analyzeBtn" disabled>Start Forensic Investigation</button>
+          </div>
+        </section>
+
+        <!-- Live Analysis Pipeline Matrix -->
+        <section class="panel">
+          <div class="panel-title">
+            <span>Live Task Execution Matrix</span>
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-cyan);">Real Progress</span>
+          </div>
+
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="progressBar"></div>
+          </div>
+
+          <div class="task-matrix" id="taskMatrix">
+            <!-- Populated dynamically via JS -->
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Image Dossier Findings & Evidence Sections -->
+      <section class="panel results-container" id="resultsContainer">
+        <div class="panel-title">
+          <span>Forensic Investigation Dossier</span>
+          <button class="export-btn" id="exportJsonBtn">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            Export JSON Dossier
+          </button>
+        </div>
+
+        <!-- Verdict Banner -->
+        <div class="verdict-banner" id="verdictBanner">
+          <div>
+            <div class="verdict-title" id="verdictTitle">SYNTHESIS ASSESSMENT</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);" id="verdictSummary">Summary loading...</div>
+          </div>
+          <div style="font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem; color: #fff;" id="verdictConfidence">--</div>
+        </div>
+
+        <!-- Image Authenticity Assessment Section (3-Column Architecture: Programmatic, AI Model, Overall Combined) -->
+        <div id="authenticityAssessmentSection" style="margin-top: 1.5rem; margin-bottom: 1.75rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.9rem;">
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-cyan); box-shadow: 0 0 10px var(--accent-cyan);"></span>
+              <span style="font-weight: 800; font-size: 0.92rem; color: #fff; text-transform: uppercase; letter-spacing: 0.8px;">
+                Dual-Engine Image Authenticity Telemetry
+              </span>
+            </div>
+            <span class="badge" id="authOverallBadge" style="font-size: 0.8rem; font-weight: 700;">AWAITING EVALUATION</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+            
+            <!-- Block A: Programmatic Detection -->
+            <div class="panel" style="background: rgba(14, 21, 38, 0.7); border: 1px solid rgba(0, 240, 255, 0.25); border-top: 3px solid var(--accent-cyan); padding: 1.35rem; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+                <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--accent-cyan); font-weight: 800; letter-spacing: 0.6px;">Process A: Programmatic Forensics</span>
+                <span class="badge" id="progClassBadge">--</span>
+              </div>
+              <div style="font-size: 0.76rem; color: var(--text-dim); margin-bottom: 0.9rem; line-height: 1.4;">Physical signal integrity (ELA, noise variance, copy-move clones, metadata, 2D FFT spectrum).</div>
+
+              <div class="prob-meter-label">
+                <span style="color: var(--accent-emerald); font-weight: 700;">Human / Real-like</span>
+                <strong style="color: var(--accent-emerald); font-family: var(--font-mono); font-size: 0.95rem;" id="progRealVal">0.0%</strong>
+              </div>
+              <div class="prob-bar-track">
+                <div class="prob-bar-fill real" id="progRealBar" style="width: 0%;"></div>
+              </div>
+
+              <div class="prob-meter-label" style="margin-top: 0.75rem;">
+                <span style="color: var(--accent-rose); font-weight: 700;">AI / Fake-like</span>
+                <strong style="color: var(--accent-rose); font-family: var(--font-mono); font-size: 0.95rem;" id="progFakeVal">0.0%</strong>
+              </div>
+              <div class="prob-bar-track">
+                <div class="prob-bar-fill fake" id="progFakeBar" style="width: 0%;"></div>
+              </div>
+            </div>
+
+            <!-- Block B: AI Model Detection (EfficientNet-B0) -->
+            <div class="panel" style="background: rgba(14, 21, 38, 0.7); border: 1px solid rgba(16, 185, 129, 0.25); border-top: 3px solid var(--accent-emerald); padding: 1.35rem; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+                <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--accent-emerald); font-weight: 800; letter-spacing: 0.6px;">Process B: EfficientNet-B0 Model</span>
+                <span class="badge" id="aiClassBadge">--</span>
+              </div>
+              <div style="font-size: 0.76rem; color: var(--text-dim); margin-bottom: 0.9rem; line-height: 1.4;">Deep neural classification (Trained on 10,905 images &bull; Test ROC-AUC: 0.8292).</div>
+
+              <div class="prob-meter-label">
+                <span style="color: var(--accent-emerald); font-weight: 700;">Human / Real-like</span>
+                <strong style="color: var(--accent-emerald); font-family: var(--font-mono); font-size: 0.95rem;" id="aiRealVal">0.0%</strong>
+              </div>
+              <div class="prob-bar-track">
+                <div class="prob-bar-fill real" id="aiRealBar" style="width: 0%;"></div>
+              </div>
+
+              <div class="prob-meter-label" style="margin-top: 0.75rem;">
+                <span style="color: var(--accent-rose); font-weight: 700;">AI / Fake-like</span>
+                <strong style="color: var(--accent-rose); font-family: var(--font-mono); font-size: 0.95rem;" id="aiFakeVal">0.0%</strong>
+              </div>
+              <div class="prob-bar-track">
+                <div class="prob-bar-fill fake" id="aiFakeBar" style="width: 0%;"></div>
+              </div>
+            </div>
+
+            <!-- Block C: Overall Combined Assessment -->
+            <div class="panel" style="background: linear-gradient(135deg, rgba(20, 30, 52, 0.88), rgba(11, 17, 30, 0.95)); border: 1px solid rgba(0, 240, 255, 0.45); border-top: 3px solid #fff; padding: 1.35rem; box-shadow: 0 0 25px rgba(0, 240, 255, 0.12), 0 12px 32px rgba(0, 0, 0, 0.65);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+                <span style="font-size: 0.75rem; text-transform: uppercase; color: #fff; font-weight: 800; letter-spacing: 0.6px;">Process C: Overall Combined</span>
+                <span class="badge online" id="combClassBadge">--</span>
+              </div>
+              <div style="font-size: 0.76rem; color: var(--text-dim); margin-bottom: 0.9rem; line-height: 1.4;">Orthogonal 50/50 synthesis of physical signal & neural classification.</div>
+
+              <div class="prob-meter-label">
+                <span style="color: var(--accent-emerald); font-weight: 700;">Overall Real-like</span>
+                <strong style="color: var(--accent-emerald); font-family: var(--font-mono); font-size: 1.2rem; text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);" id="combRealVal">0.0%</strong>
+              </div>
+              <div class="prob-bar-track" style="height: 14px;">
+                <div class="prob-bar-fill real" id="combRealBar" style="width: 0%;"></div>
+              </div>
+
+              <div class="prob-meter-label" style="margin-top: 0.75rem;">
+                <span style="color: var(--accent-rose); font-weight: 700;">Overall Fake-like</span>
+                <strong style="color: var(--accent-rose); font-family: var(--font-mono); font-size: 1.2rem; text-shadow: 0 0 10px rgba(244, 63, 94, 0.4);" id="combFakeVal">0.0%</strong>
+              </div>
+              <div class="prob-bar-track" style="height: 14px;">
+                <div class="prob-bar-fill fake" id="combFakeBar" style="width: 0%;"></div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Uncertainty / Disagreement Advisory Callout -->
+          <div id="authDisagreementBox" style="margin-top: 1rem; padding: 0.9rem 1.2rem; border-radius: 8px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.5); display: none; font-size: 0.82rem; color: #fbbf24;">
+            <strong style="display: block; margin-bottom: 0.25rem; font-weight: 800; letter-spacing: 0.5px;">⚠️ DETECTOR DISCREPANCY ADVISORY</strong>
+            <span id="authDisagreementText"></span>
+          </div>
+
+          <div style="margin-top: 0.85rem; font-size: 0.74rem; color: var(--text-dim); font-style: italic;">
+            * Notice: Displayed scores represent assessments from our programmatic and neural detection systems. They are not definitive proof of image authenticity.
+          </div>
+        </div>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="tab-evidence">Key Indicators</button>
+          <button class="tab-btn" data-tab="tab-osint">Contextual OSINT</button>
+          <button class="tab-btn" data-tab="tab-hashes">Multi-Hash Fingerprints</button>
+          <button class="tab-btn" data-tab="tab-ela">ELA & Tampering</button>
+          <button class="tab-btn" data-tab="tab-ai">AI & Deepfake Likelihood</button>
+          <button class="tab-btn" data-tab="tab-metadata">EXIF & Provenance</button>
+          <button class="tab-btn" data-tab="tab-reverse">Reverse Matches</button>
+        </div>
+
+        <!-- Tab 1: Key Indicators -->
+        <div class="tab-pane active" id="tab-evidence">
+          <!-- Dual-Pass Verification Matrix -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+            <div class="panel" style="background: rgba(0, 229, 255, 0.04); border: 1px solid rgba(0, 229, 255, 0.25);">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 700; font-size: 0.82rem; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.5px;">Pass 1: Contextual OSINT Pass</span>
+                <span class="badge" id="pass1Badge">--</span>
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-main); margin-top: 0.5rem; line-height: 1.4;" id="pass1Text">--</div>
+            </div>
+            
+            <div class="panel" style="background: rgba(118, 255, 3, 0.04); border: 1px solid rgba(118, 255, 3, 0.25);">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 700; font-size: 0.82rem; color: var(--accent-emerald); text-transform: uppercase; letter-spacing: 0.5px;">Pass 2: Blind Forensics (Without Clue)</span>
+                <span class="badge" id="pass2Badge">--</span>
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-main); margin-top: 0.5rem; line-height: 1.4;" id="pass2Text">--</div>
+            </div>
+          </div>
+
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+            Empirical Signals Identified by Specialized Local Forensic Engines:
+          </p>
+          <ul class="evidence-list" id="indicatorList">
+            <!-- Populated dynamically via JS -->
+          </ul>
+        </div>
+
+        <!-- Tab OSINT: Contextual Entity & Scenario Verification -->
+        <div class="tab-pane" id="tab-osint">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+            <div class="panel" style="background: var(--bg-card);">
+              <div style="color: var(--text-dim); font-size: 0.8rem;">Recognized Public Entity</div>
+              <div style="font-size: 1.15rem; font-weight: 700; color: #fff; margin-top: 0.35rem;" id="osintEntity">--</div>
+              <div style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.2rem;" id="osintRole">--</div>
+            </div>
+            <div class="panel" style="background: var(--bg-card);">
+              <div style="color: var(--text-dim); font-size: 0.8rem;">Depicted Activity & Setting</div>
+              <div style="font-size: 0.95rem; font-weight: 600; color: #fff; margin-top: 0.35rem;" id="osintActivity">--</div>
+            </div>
+            <div class="panel" style="background: var(--bg-card);">
+              <div style="color: var(--text-dim); font-size: 0.8rem;">Scenario Plausibility</div>
+              <div style="font-size: 1.15rem; font-weight: 700; color: var(--accent-cyan); margin-top: 0.35rem;" id="osintPlausibility">--</div>
+            </div>
+            <div class="panel" style="background: var(--bg-card);">
+              <div style="color: var(--text-dim); font-size: 0.8rem;">Multimodal Match Confidence</div>
+              <div style="font-size: 1.15rem; font-weight: 700; color: var(--accent-emerald); margin-top: 0.35rem;" id="osintConfidence">--%</div>
+            </div>
+          </div>
+
+          <div id="osintAlertBox" style="padding: 1rem 1.25rem; border-radius: 6px; background: rgba(255, 23, 68, 0.08); border: 1px solid rgba(255, 23, 68, 0.4); display: none; margin-bottom: 1rem;">
+            <strong style="color: var(--accent-rose); display: block; margin-bottom: 0.35rem;">CONTEXTUAL INCONGRUITY DETECTED (HIGH AI FABRICATION RISK)</strong>
+            <span style="font-size: 0.85rem; color: var(--text-main);" id="osintConflictText"></span>
+          </div>
+
+          <div id="osintVerifiedBox" style="padding: 1rem 1.25rem; border-radius: 6px; background: rgba(0, 230, 118, 0.08); border: 1px solid rgba(0, 230, 118, 0.4); display: none; margin-bottom: 1rem;">
+            <strong style="color: var(--accent-emerald); display: block; margin-bottom: 0.35rem;">AUTHENTIC VOCATION & SETTING VERIFIED</strong>
+            <span style="font-size: 0.85rem; color: var(--text-main);" id="osintVerifiedText"></span>
+          </div>
+        </div>
+
+        <!-- Tab 2: Fingerprints -->
+        <div class="tab-pane" id="tab-hashes">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 35%;">Algorithm & Purpose</th>
+                <th>Generated Fingerprint</th>
+              </tr>
+            </thead>
+            <tbody id="hashRows">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Tab 3: ELA & Tampering -->
+        <div class="tab-pane" id="tab-ela">
+          <div style="display: flex; gap: 1rem; margin-bottom: 1rem; font-size: 0.85rem; flex-wrap: wrap;">
+            <div class="badge">ELA Status: <strong id="elaAnomaly" style="color: var(--accent-cyan);">--</strong></div>
+            <div class="badge">Noise Inconsistency: <strong id="noiseInconsistency" style="color: var(--accent-amber);">--</strong></div>
+            <div class="badge">Clone Copy-Move: <strong id="copyMoveClones" style="color: var(--accent-rose);">--</strong></div>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 0.5rem;" id="elaStats">--</div>
+
+          <div class="split-viewer">
+            <div class="viewer-card">
+              <div class="viewer-card-header">
+                <span>Original Ingested Image</span>
+              </div>
+              <img id="elaOrigImg" src="" alt="Original Image">
+            </div>
+            <div class="viewer-card">
+              <div class="viewer-card-header">
+                <span>Error Level Analysis Heatmap (Quality 95, 15x Scale)</span>
+              </div>
+              <img id="elaHeatmapImg" src="" alt="ELA Heatmap">
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: AI Classifier -->
+        <div class="tab-pane" id="tab-ai">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+            <div class="panel" style="background: var(--bg-card);">
+              <div style="color: var(--text-dim); font-size: 0.8rem;">Synthetic Probability</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-cyan); margin-top: 0.25rem;" id="aiLikelihoodScore">--%</div>
+            </div>
+            <div class="panel" style="background: var(--bg-card);">
+              <div style="color: var(--text-dim); font-size: 0.8rem;">Classification Bracket</div>
+              <div style="font-size: 1.15rem; font-weight: 700; color: #fff; margin-top: 0.25rem;" id="aiClassificationBracket">--</div>
+            </div>
+            <div class="panel" style="background: var(--bg-card);">
+              <div style="color: var(--text-dim); font-size: 0.8rem;">Backbone Model</div>
+              <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted); margin-top: 0.25rem;" id="aiModelUsed">Organika/sdxl-detector</div>
+            </div>
+            <div class="panel" style="background: var(--bg-card);">
+              <div style="color: var(--text-dim); font-size: 0.8rem;">2D FFT Spectrum Signals</div>
+              <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted); margin-top: 0.25rem;" id="fftSignals">--</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 5: EXIF & Metadata -->
+        <div class="tab-pane" id="tab-metadata">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 35%;">Metadata Attribute</th>
+                <th>Extracted Value</th>
+              </tr>
+            </thead>
+            <tbody id="metadataRows">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Tab 6: Reverse Matches -->
+        <div class="tab-pane" id="tab-reverse">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Reference Item</th>
+                <th>Platform / Source</th>
+                <th>Visual Similarity</th>
+                <th>Interpretation</th>
+              </tr>
+            </thead>
+            <tbody id="reverseMatchRows">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+    </div> <!-- Close #imageWorkspace -->
+
+
+    <!-- ============================================================= -->
+    <!-- 2. AUDIO DEEPFAKE DETECTION WORKSPACE (DF Arena 1B)           -->
+    <!-- ============================================================= -->
+    <div id="audioWorkspace" style="display: none;">
+      <div class="grid-top">
+        
+        <!-- Audio Ingestion Panel -->
+        <section class="panel">
+          <div class="panel-title">
+            <span>Audio Recording Ingestion</span>
+            <span style="font-family: var(--font-mono); font-size: 0.75rem;">Max 50 MB</span>
+          </div>
+
+          <div class="dropzone" id="audioDropzone">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v7.5a3 3 0 0 1-3 3Z" />
+            </svg>
+            <p>Drag & drop suspicious audio recording here, or browse</p>
+            <small>Supported: WAV, MP3, AAC, M4A, OGG, FLAC (16 kHz Resampled)</small>
+            <input type="file" id="audioFileInput" accept="audio/*,.aac,.m4a,.mp3,.wav,.ogg,.flac,.opus" style="display: none;">
+          </div>
+
+          <div class="preview-container" id="audioPreviewContainer" style="display: none;">
+            <div class="audio-player-card">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+                <div>
+                  <div id="audioFilename" style="color: #fff; font-weight: 600; word-break: break-all;">audio.wav</div>
+                  <div id="audioMetaSize" style="color: var(--text-dim); font-size: 0.8rem; margin-top: 0.2rem;">0.00 MB</div>
+                </div>
+                <span class="badge online" id="audioFormatBadge">WAV</span>
+              </div>
+              
+              <!-- Audio Player Preview -->
+              <audio id="audioPlayer" controls style="width: 100%; border-radius: 4px; outline: none; margin-bottom: 0.5rem;"></audio>
+            </div>
+            
+            <button class="btn-primary" id="detectAudioBtn" style="margin-top: 1rem;">
+              <span id="audioBtnText">Detect Audio Deepfake</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Audio Architecture & Model Overview Panel -->
+        <section class="panel">
+          <div class="panel-title">
+            <span>DF Arena 1B Neural Architecture</span>
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-cyan);">Active Checkpoint</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.85rem;">
+            <div class="panel" style="background: var(--bg-card); padding: 0.85rem; border: 1px solid var(--border-color);">
+              <div style="color: var(--text-dim); font-size: 0.75rem;">Model Backbone</div>
+              <div style="font-weight: 700; color: #fff; margin-top: 0.2rem;">Wav2Vec2 XLS-R 1B + 48-Layer Conformer</div>
+              <div style="color: var(--accent-cyan); font-size: 0.75rem; margin-top: 0.2rem;">Speech-Arena-2025/DF_Arena_1B_V_1</div>
+            </div>
+
+            <div class="panel" style="background: var(--bg-card); padding: 0.85rem; border: 1px solid var(--border-color);">
+              <div style="color: var(--text-dim); font-size: 0.75rem;">Fine-Tuned Classification Head</div>
+              <div style="font-weight: 700; color: var(--accent-emerald); margin-top: 0.2rem;">Restored fc5 (Linear 1280 &rarr; 2 Classes)</div>
+              <div style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.2rem;">Class 0 = Spoof (Fake) | Class 1 = Bonafide (Real)</div>
+            </div>
+
+            <div class="panel" style="background: var(--bg-card); padding: 0.85rem; border: 1px solid var(--border-color);">
+              <div style="color: var(--text-dim); font-size: 0.75rem;">Preprocessing & Windowing Strategy</div>
+              <div style="color: var(--text-main); margin-top: 0.2rem;">Mono float32 @ 16,000 Hz &bull; 64,600-sample (~4.04s) sliding windows with 50% overlap.</div>
+            </div>
+            
+            <div id="audioStatusCard" class="panel" style="background: rgba(0, 229, 255, 0.04); border: 1px solid rgba(0, 229, 255, 0.25); display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem;">
+              <span class="badge online">System Ready</span>
+              <span style="font-size: 0.8rem; color: var(--text-muted);" id="audioStatusText">Awaiting audio recording upload.</span>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Audio Results Section -->
+      <section class="panel results-container" id="audioResultsContainer" style="display: none; margin-top: 1.5rem;">
+        <div class="panel-title">
+          <span>Audio Deepfake Forensic Evaluation</span>
+          <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-cyan);" id="audioExecutionTime">0.0 ms</span>
+        </div>
+
+        <!-- Audio Verdict Banner -->
+        <div class="verdict-banner" id="audioVerdictBanner">
+          <div>
+            <div class="verdict-title" id="audioVerdictTitle">CLASSIFICATION PENDING</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;" id="audioVerdictSummary">Summary text...</div>
+          </div>
+          <div style="font-family: var(--font-mono); font-weight: 700; font-size: 1.25rem; color: #fff; text-align: right;" id="audioVerdictScore">--%</div>
+        </div>
+
+        <!-- Probability Meter Gauges -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.25rem; margin-bottom: 1.25rem;">
+          <div class="panel" style="background: var(--bg-card); padding: 1.25rem;">
+            <div class="prob-meter-label">
+              <span style="font-weight: 700; color: var(--accent-rose);">Spoof / AI-Generated Voice</span>
+              <strong style="color: var(--accent-rose); font-family: var(--font-mono);" id="spoofProbVal">0.0%</strong>
+            </div>
+            <div class="prob-bar-track">
+              <div class="prob-bar-fill spoof" id="spoofBarFill" style="width: 0%;"></div>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.5rem;">
+              Class 0: Likelihood of speech synthesis, text-to-speech (TTS), or voice conversion cloning.
+            </div>
+          </div>
+
+          <div class="panel" style="background: var(--bg-card); padding: 1.25rem;">
+            <div class="prob-meter-label">
+              <span style="font-weight: 700; color: var(--accent-emerald);">Bonafide / Genuine Human Speech</span>
+              <strong style="color: var(--accent-emerald); font-family: var(--font-mono);" id="bonafideProbVal">0.0%</strong>
+            </div>
+            <div class="prob-bar-track">
+              <div class="prob-bar-fill bonafide" id="bonafideBarFill" style="width: 0%;"></div>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.5rem;">
+              Class 1: Likelihood of natural human vocal tract resonance and authentic biological cadence.
+            </div>
+          </div>
+        </div>
+
+        <!-- Metadata & Chunk Analysis Table -->
+        <table class="data-table" style="margin-top: 1rem;">
+          <thead>
+            <tr>
+              <th style="width: 35%;">Parameter</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody id="audioMetaRows">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+
+        <!-- Chunk Breakdown Section -->
+        <div id="audioChunksWrap" style="margin-top: 1.25rem; display: none;">
+          <h4 style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 0.5rem;">Sliding Window Chunk Breakdown</h4>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Chunk Window</th>
+                <th>Spoof Probability</th>
+                <th>Bonafide Probability</th>
+                <th>Chunk Verdict</th>
+              </tr>
+            </thead>
+            <tbody id="audioChunkRows">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top: 1.25rem; padding: 0.85rem 1rem; border-radius: 4px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-dim);">
+          <strong style="color: var(--text-muted);">Forensic Notice:</strong> Probabilities reflect empirical model outputs from the fine-tuned DF Arena 1B neural network. Percentages represent model confidence rather than guaranteed legal proof.
+        </div>
+      </section>
+    </div> <!-- Close #audioWorkspace -->
+
+
+    <!-- ============================================================= -->
+    <!-- 3. VIDEO DEEPFAKE DETECTION WORKSPACE (HongguLiu / FF++)     -->
+    <!-- ============================================================= -->
+    <div id="videoWorkspace" style="display: none;">
+      <div class="grid-top">
+        
+        <!-- Video Ingestion Panel -->
+        <section class="panel">
+          <div class="panel-title">
+            <span>Video Recording Ingestion</span>
+            <span style="font-family: var(--font-mono); font-size: 0.75rem;">Max 100 MB</span>
+          </div>
+
+          <div class="dropzone" id="videoDropzone">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-2.36a.75.75 0 0 1 1.03.686v6.348a.75.75 0 0 1-1.03.686l-4.72-2.36M4.5 18.75h10.5a2.25 2.25 0 0 0 2.25-2.25V7.5a2.25 2.25 0 0 0-2.25-2.25H4.5A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+            </svg>
+            <p>Drag & drop suspicious video recording here, or browse</p>
+            <small>Supported: MP4, AVI, MOV, MKV, WebM (Frame-by-Frame Facial Forensics)</small>
+            <input type="file" id="videoFileInput" accept="video/*,.mp4,.avi,.mov,.mkv,.webm" style="display: none;">
+          </div>
+
+          <div class="preview-container" id="videoPreviewContainer" style="display: none;">
+            <div class="video-player-card">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+                <div>
+                  <div id="videoFilename" style="color: #fff; font-weight: 600; word-break: break-all;">video.mp4</div>
+                  <div id="videoMetaSize" style="color: var(--text-dim); font-size: 0.8rem; margin-top: 0.2rem;">0.00 MB</div>
+                </div>
+                <span class="badge online" id="videoFormatBadge">MP4</span>
+              </div>
+              
+              <!-- Video Player with Neural Scanning Animation Overlay -->
+              <div class="video-preview-wrapper">
+                <video id="videoPlayer" controls style="width: 100%; display: block; max-height: 280px;"></video>
+                <div class="video-scan-overlay" id="videoScanOverlay">
+                  <div class="video-scan-line"></div>
+                  <div class="video-scan-badge">
+                    <span class="spinner"></span>
+                    <span>FRAME SCANNER ACTIVE &bull; EVALUATING FACIAL TAMPERING</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Video Quick Specs -->
+              <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap;">
+                <span class="badge" id="videoMetaDuration">Duration: --</span>
+                <span class="badge" id="videoMetaResolution">Resolution: --</span>
+                <span class="badge" id="videoMetaFps">FPS: --</span>
+              </div>
+            </div>
+            
+            <button class="btn-primary" id="detectVideoBtn" style="margin-top: 1rem;">
+              <span id="videoBtnText">Detect Video Deepfake</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Video Model & Architecture Overview -->
+        <section class="panel">
+          <div class="panel-title">
+            <span>Dual-Engine Video Forensic Architecture</span>
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-cyan);">GenD + DeMamba</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.85rem;">
+            <div class="panel" style="background: var(--bg-card); padding: 0.85rem; border: 1px solid var(--border-color);">
+              <div style="color: var(--text-dim); font-size: 0.75rem;">Model 1: AI-Generated Video Detector</div>
+              <div style="font-weight: 700; color: #fff; margin-top: 0.2rem;">DeMamba (X-CLIP + Mamba Backbone)</div>
+              <div style="color: var(--accent-cyan); font-size: 0.75rem; margin-top: 0.2rem;">Trained on GenVideo-100K (Crafter, Gen-2, Sora, Kling, Pika, ModelScope)</div>
+            </div>
+
+            <div class="panel" style="background: var(--bg-card); padding: 0.85rem; border: 1px solid var(--border-color);">
+              <div style="color: var(--text-dim); font-size: 0.75rem;">Model 2: Generalized Facial Deepfake Detector</div>
+              <div style="font-weight: 700; color: var(--accent-emerald); margin-top: 0.2rem;">GenD (CLIP-Large ViT-14 &bull; WACV 2026)</div>
+              <div style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.2rem;">Cross-benchmark deepfake generalization (FaceForensics++, Celeb-DF, Wild Deepfakes)</div>
+            </div>
+
+            <div class="panel" style="background: var(--bg-card); padding: 0.85rem; border: 1px solid var(--border-color);">
+              <div style="color: var(--text-dim); font-size: 0.75rem;">Detection Capabilities</div>
+              <div style="color: var(--text-main); margin-top: 0.2rem;">Multi-modal analysis: checks for full AI video generation (DeMamba) AND facial tampering/deepfakes (GenD). Verified human recordings output <strong>BONAFIDE</strong>.</div>
+            </div>
+            
+            <div id="videoStatusCard" class="panel" style="background: rgba(0, 229, 255, 0.04); border: 1px solid rgba(0, 229, 255, 0.25); display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem;">
+              <span class="badge online">System Ready</span>
+              <span style="font-size: 0.8rem; color: var(--text-muted);" id="videoStatusText">Awaiting video recording upload.</span>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Video Results Section -->
+      <section class="panel results-container" id="videoResultsContainer" style="display: none; margin-top: 1.5rem;">
+        <div class="panel-title">
+          <span>Dual-Model Video Forensic Evaluation (GenD + DeMamba)</span>
+          <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-cyan);" id="videoExecutionTime">0.0 ms</span>
+        </div>
+
+        <!-- Video Verdict Banner -->
+        <div class="verdict-banner" id="videoVerdictBanner">
+          <div>
+            <div class="verdict-title" id="videoVerdictTitle">CLASSIFICATION PENDING</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;" id="videoVerdictSummary">Summary text...</div>
+          </div>
+          <div style="font-family: var(--font-mono); font-weight: 700; font-size: 1.25rem; color: #fff; text-align: right;" id="videoVerdictScore">--%</div>
+        </div>
+
+        <!-- Dual Probability Meters (AI Generated Video + Deepfake Facial Manipulation) -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.25rem; margin-bottom: 1.25rem;">
+          
+          <!-- Gauge 1: DeMamba (AI-Generated Video Detection) -->
+          <div class="panel" style="background: var(--bg-card); padding: 1.25rem; border: 1px solid rgba(0, 229, 255, 0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent-cyan); font-weight: 700;">DeMamba (GenVideo-100K)</span>
+              <span class="badge" id="videoAiBadge">AI EVALUATION</span>
+            </div>
+            
+            <div class="prob-meter-label" style="margin-top: 0.5rem;">
+              <span style="font-weight: 600; color: var(--accent-rose);">Spoof (AI Generated Video)</span>
+              <strong style="color: var(--accent-rose); font-family: var(--font-mono); font-size: 1.1rem;" id="videoAiSpoofVal">0.0%</strong>
+            </div>
+            <div class="prob-bar-track">
+              <div class="prob-bar-fill fake" id="videoAiSpoofBar" style="width: 0%;"></div>
+            </div>
+
+            <div class="prob-meter-label" style="margin-top: 0.6rem;">
+              <span style="font-weight: 600; color: var(--accent-emerald);">Bonafide (Camera Recorded)</span>
+              <strong style="color: var(--accent-emerald); font-family: var(--font-mono); font-size: 1.1rem;" id="videoAiBonafideVal">0.0%</strong>
+            </div>
+            <div class="prob-bar-track">
+              <div class="prob-bar-fill real" id="videoAiBonafideBar" style="width: 0%;"></div>
+            </div>
+
+            <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.6rem;">
+              Tests for synthetic diffusion/transformer video generation (Sora, Kling, Runway Gen-2, Pika, Crafter).
+            </div>
+          </div>
+
+          <!-- Gauge 2: GenD (Facial Deepfake Detection) -->
+          <div class="panel" style="background: var(--bg-card); padding: 1.25rem; border: 1px solid rgba(118, 255, 3, 0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent-emerald); font-weight: 700;">GenD CLIP-L/14 (WACV 2026)</span>
+              <span class="badge" id="videoDfBadge">DEEPFAKE EVALUATION</span>
+            </div>
+
+            <div class="prob-meter-label" style="margin-top: 0.5rem;">
+              <span style="font-weight: 600; color: var(--accent-rose);">Spoof (Deepfake Manipulation)</span>
+              <strong style="color: var(--accent-rose); font-family: var(--font-mono); font-size: 1.1rem;" id="videoDfSpoofVal">0.0%</strong>
+            </div>
+            <div class="prob-bar-track">
+              <div class="prob-bar-fill fake" id="videoDfSpoofBar" style="width: 0%;"></div>
+            </div>
+
+            <div class="prob-meter-label" style="margin-top: 0.6rem;">
+              <span style="font-weight: 600; color: var(--accent-emerald);">Bonafide (Genuine Human Face)</span>
+              <strong style="color: var(--accent-emerald); font-family: var(--font-mono); font-size: 1.1rem;" id="videoDfBonafideVal">0.0%</strong>
+            </div>
+            <div class="prob-bar-track">
+              <div class="prob-bar-fill real" id="videoDfBonafideBar" style="width: 0%;"></div>
+            </div>
+
+            <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.6rem;">
+              Tests for face swaps, facial reenactment, and boundary blending manipulation across benchmarks.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Technical Parameters Table -->
+        <table class="data-table" style="margin-top: 1rem;">
+          <thead>
+            <tr>
+              <th style="width: 35%;">Parameter</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody id="videoMetaRows">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+
+        <!-- Frame-by-Frame Temporal Breakdown -->
+        <div id="videoFramesWrap" style="margin-top: 1.25rem;">
+          <h4 style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 0.5rem;">Temporal Frame Breakdown & Facial Forensics (GenD)</h4>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Sampled Frame</th>
+                <th>Timestamp</th>
+                <th>Face Instance & Box</th>
+                <th>Spoof Deepfake %</th>
+                <th>Bonafide Face %</th>
+                <th>Frame Verdict</th>
+              </tr>
+            </thead>
+            <tbody id="videoFrameRows">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top: 1.25rem; padding: 0.85rem 1rem; border-radius: 4px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-dim);">
+          <strong style="color: var(--text-muted);">Forensic Notice:</strong> Video classifications reflect dual neural model evaluation: DeMamba (GenVideo-100K) for full AI video generation and GenD (WACV 2026) for generalized facial deepfake detection. Genuine camera capture of humans is verified as <strong>BONAFIDE</strong>.
+        </div>
+      </section>
+    </div> <!-- Close #videoWorkspace -->
+
+
+    <!-- ============================================================= -->
+    <!-- 4. TEXT AI-AUTHORSHIP DETECTION WORKSPACE (RoBERTa-base)       -->
+    <!-- ============================================================= -->
+    <div id="textWorkspace" style="display: none;">
+      <div class="grid-top">
+        
+        <!-- Text Ingestion Panel -->
+        <section class="panel">
+          <div class="panel-title">
+            <span>Text Ingestion & Authorship Input</span>
+            <span style="font-family: var(--font-mono); font-size: 0.75rem;" id="textStats">0 words | 0 chars</span>
+          </div>
+
+          <!-- Quick Samples Bar -->
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 0.85rem; flex-wrap: wrap;">
+            <button class="export-btn" id="loadAiSampleBtn" type="button" style="padding: 0.4rem 0.85rem; font-size: 0.76rem; border-color: rgba(244, 63, 94, 0.4); color: var(--accent-rose);">
+              ⚡ Load AI Sample
+            </button>
+            <button class="export-btn" id="loadHumanSampleBtn" type="button" style="padding: 0.4rem 0.85rem; font-size: 0.76rem; border-color: rgba(16, 185, 129, 0.4); color: var(--accent-emerald);">
+              👤 Load Human Sample
+            </button>
+            <button class="export-btn" id="clearTextBtn" type="button" style="padding: 0.4rem 0.85rem; font-size: 0.76rem;">
+              ✕ Clear
+            </button>
+          </div>
+
+          <!-- Textarea Input Area -->
+          <textarea id="textInput" rows="10" placeholder="Paste or type suspicious article, essay, or prompt response here to test for AI vs Human authorship..." style="width: 100%; background: rgba(10, 16, 28, 0.75); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; color: #f8fafc; font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.6; resize: vertical; outline: none; transition: border-color 0.2s ease;"></textarea>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.6rem;">
+            <span style="font-size: 0.72rem; color: var(--text-dim); font-family: var(--font-mono);">
+              Tokenizer: BPE (Vocab: 50,265) &bull; Sequence Window: 256 tokens
+            </span>
+            <span id="textCharWarn" style="font-size: 0.72rem; color: var(--accent-amber); display: none;">Long text (>256 tokens) will be truncated</span>
+          </div>
+
+          <button class="btn-primary" id="detectTextBtn" style="margin-top: 1.1rem;">
+            <span id="textBtnText">Analyze Text Authenticity</span>
+          </button>
+        </section>
+
+        <!-- Model Architecture & Overview Panel -->
+        <section class="panel">
+          <div class="panel-title">
+            <span>RoBERTa-base Neural Architecture</span>
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-cyan);">Active Checkpoint</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.85rem;">
+            <div class="panel" style="background: var(--bg-card); padding: 0.85rem; border: 1px solid var(--border-color);">
+              <div style="color: var(--text-dim); font-size: 0.75rem;">Transformer Backbone</div>
+              <div style="font-weight: 700; color: #fff; margin-top: 0.2rem;">RoBERTa-base (12 Layers &bull; 768 Hidden &bull; 12 Heads)</div>
+              <div style="color: var(--accent-cyan); font-size: 0.75rem; margin-top: 0.2rem;">124.6M Parameters &bull; RobertaForSequenceClassification</div>
+            </div>
+
+            <div class="panel" style="background: var(--bg-card); padding: 0.85rem; border: 1px solid var(--border-color);">
+              <div style="color: var(--text-dim); font-size: 0.75rem;">Fine-Tuned Classification Head</div>
+              <div style="font-weight: 700; color: var(--accent-emerald); margin-top: 0.2rem;">2-Class Linear Classifier (768 &rarr; 2)</div>
+              <div style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.2rem;">Class 0: Human-written &bull; Class 1: AI-generated</div>
+            </div>
+
+            <div class="panel" style="background: var(--bg-card); padding: 0.85rem; border: 1px solid var(--border-color);">
+              <div style="color: var(--text-dim); font-size: 0.75rem;">Validation Benchmark Metrics</div>
+              <div style="color: var(--text-main); margin-top: 0.2rem;">5,770 Train &bull; 722 Val &bull; 722 Test &bull; <strong>Best Val Macro F1: 0.9695 (Epoch 2)</strong></div>
+            </div>
+            
+            <div id="textStatusCard" class="panel" style="background: rgba(0, 240, 255, 0.04); border: 1px solid rgba(0, 240, 255, 0.25); display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem;">
+              <span class="badge online"><span class="live-beacon"></span> System Ready</span>
+              <span style="font-size: 0.8rem; color: var(--text-muted);" id="textStatusText">Awaiting text submission for authorship inference.</span>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Text Results Section -->
+      <section class="panel results-container" id="textResultsContainer" style="display: none; margin-top: 1.5rem;">
+        <div class="panel-title">
+          <span>Text AI-Authorship Forensic Evaluation</span>
+          <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-cyan);" id="textExecutionTime">0.0 ms</span>
+        </div>
+
+        <!-- Text Verdict Banner -->
+        <div class="verdict-banner" id="textVerdictBanner">
+          <div>
+            <div class="verdict-title" id="textVerdictTitle">CLASSIFICATION PENDING</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;" id="textVerdictSummary">Summary text...</div>
+          </div>
+          <div style="font-family: var(--font-mono); font-weight: 700; font-size: 1.25rem; color: #fff; text-align: right;" id="textVerdictScore">--%</div>
+        </div>
+
+        <!-- Truncation Alert if >256 tokens -->
+        <div id="textTruncatedBox" style="margin-bottom: 1.25rem; padding: 0.85rem 1.1rem; border-radius: 8px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.5); display: none; font-size: 0.82rem; color: #fbbf24;">
+          <strong style="display: block; margin-bottom: 0.2rem;">⚠️ SEQUENCE TRUNCATION NOTICE</strong>
+          <span id="textTruncatedText">Input exceeded 256 tokens and was truncated to the first 256 tokens as per the model's training specification.</span>
+        </div>
+
+        <!-- Dual Probability Meters (Human-written vs AI-generated) -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.25rem; margin-bottom: 1.25rem;">
+          
+          <!-- Human-written Gauge -->
+          <div class="panel" style="background: var(--bg-card); padding: 1.25rem; border: 1px solid rgba(16, 185, 129, 0.25); border-top: 3px solid var(--accent-emerald);">
+            <div class="prob-meter-label">
+              <span style="font-weight: 700; color: var(--accent-emerald);">Human-written Score</span>
+              <strong style="color: var(--accent-emerald); font-family: var(--font-mono); font-size: 1.15rem;" id="textHumanVal">0.0%</strong>
+            </div>
+            <div class="prob-bar-track" style="height: 14px;">
+              <div class="prob-bar-fill bonafide" id="textHumanBar" style="width: 0%;"></div>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.5rem;">
+              Class 0: Likelihood of organic linguistic entropy, syntactic variation, and human authorship cadence.
+            </div>
+          </div>
+
+          <!-- AI-generated Gauge -->
+          <div class="panel" style="background: var(--bg-card); padding: 1.25rem; border: 1px solid rgba(244, 63, 94, 0.25); border-top: 3px solid var(--accent-rose);">
+            <div class="prob-meter-label">
+              <span style="font-weight: 700; color: var(--accent-rose);">AI-generated Score</span>
+              <strong style="color: var(--accent-rose); font-family: var(--font-mono); font-size: 1.15rem;" id="textAiVal">0.0%</strong>
+            </div>
+            <div class="prob-bar-track" style="height: 14px;">
+              <div class="prob-bar-fill spoof" id="textAiBar" style="width: 0%;"></div>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.5rem;">
+              Class 1: Likelihood of synthetic transformer generation, lower perplexity, and statistical phrase repetition.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Technical Parameters Table -->
+        <table class="data-table" style="margin-top: 1rem;">
+          <thead>
+            <tr>
+              <th style="width: 35%;">Parameter</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody id="textMetaRows">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+
+        <div style="margin-top: 1.25rem; padding: 0.85rem 1rem; border-radius: 6px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-dim); line-height: 1.5;">
+          <strong style="color: var(--text-muted);">Model Limitation & Transparency Notice:</strong> 
+          Displayed percentages represent softmax confidence scores from a fine-tuned RoBERTa-base model trained on Human-written and ChatGPT-generated texts. They are not calibrated probabilities of authorship and do not constitute factuality or truth verification. A separate evidence-based fact-checking process is required to determine whether a claim is true or false.
+        </div>
+      </section>
+    </div> <!-- Close #textWorkspace -->
+
+
+  </main>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

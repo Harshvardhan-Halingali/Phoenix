@@ -1,0 +1,47 @@
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# Environment Variables & Secrets
+.env
+.env.local
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Database files
+*.db
+*.db-shm
+*.db-wal
+data/*.db
+data/*.db-shm
+data/*.db-wal
+
+# Large Model Weights & Checkpoints (Exceeds GitHub 100MB limit)
+data/models/
+roberta_text_detector/
+*.safetensors
+*.pt
+*.pth
+*.bin
+*.onnx
+*.h5
+*.ckpt
+*.zip
+
+# User Uploads & Generated Reports
+data/uploads/
+data/reports/
+
+# Temporary / Scratch files
+scratch/
